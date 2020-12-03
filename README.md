@@ -4,12 +4,12 @@ This project can be used to spin up an Ethereum 2 validator and monitoring tools
 
 It automates installation and configuration of the following:
 1. The Prysmatic Labs Ethereum 2.0 client (beacon chain and validator)
-2. Creation of validator accounts
+2. Geth for running an Eth1 node (optional)
 3. Prometheus metrics (optional)
 4. Grafana dashboard (optional)
 5. Eth2stats integration (optional, recommended for testnet validators)
 6. Service scripts for all of the above (services will come up automatically after a crash or system restart)
-7. Firewall settings and other configuration
+7. Firewall settings and other configurations
 
 No need to run ANY manual commands on your server, everything is orchestrated remotely.
 

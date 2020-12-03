@@ -1,0 +1,47 @@
+---
+
+- name: Allow SSH access
+  ufw:
+    rule: allow
+    port: ssh
+    proto: tcp
+
+- name: Allow Grafana web server port
+  ufw:
+    rule: allow
+    port: '{{ grafana_port }}'
+    proto: tcp
+
+# direct access to Prometheus likely not necessary
+- name: Allow Prometheus web server port
+  ufw:
+    rule: allow
+    port: '{{ prometheus_port }}'
+    proto: tcp
+
+- name: Allow Prysm peer to peer TCP connections
+  ufw:
+    rule: allow
+    port: '{{ beaconchain_tcp_port }}'
+    proto: tcp
+
+- name: Allow Prysm peer to peer UDP connections
+  ufw:
+    rule: allow
+    port: '{{ beaconchain_udp_port }}'
+    proto: udp
+
+- name: Allow incoming connections to Geth (eth1) node
+  ufw:
+    rule: "{{ (install_eth1_node == true) | ternary('allow', 'deny') }}"
+    port: '30303'
+
+- name: configure external http access for Geth
+  ufw:
+    rule: "{{ (geth_open_http_port == true) | ternary('allow', 'deny') }}"
+    port: '{{ geth_http_port }}'
+
+- name: Enable UFW and deny all traffic by default
+  ufw:
+    state: enabled
+    policy: deny

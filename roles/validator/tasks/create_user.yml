@@ -1,0 +1,15 @@
+---
+
+# creates a user without login shell or home directory, for running a service. 
+
+- name: Ensure group '{{ username }}' exists
+  group:
+    name: "{{ username }}"
+    state: present
+
+- name: Add the user '{{ username }}'
+  user:
+    name: "{{ username }}"
+    group: "{{ username }}"
+    shell: /usr/bin/false
+    create_home: no

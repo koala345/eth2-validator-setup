@@ -1,0 +1,52 @@
+---
+
+- import_tasks: create_user.yml
+  vars:
+    username: cryptowat
+
+# - name: Create the /root/cryptowat directory
+#   file:
+#     path: /root/cryptowat
+#     state: directory
+#     mode: '0755'
+#     owner: root
+#     group: root
+
+- name: download cryptowat archive
+  get_url:
+    url: "https://github.com/nbarrientos/cryptowat_exporter/archive/{{ cryptowat_archive_id }}.zip"
+    dest: /root
+    force: no
+  when: not skip_downloads
+
+- name: unzip cryptowat
+  unarchive:
+    src: "/root/cryptowat_exporter-{{ cryptowat_archive_id }}.zip"
+    dest: /root
+    remote_src: yes
+  args:
+    creates: "/root/cryptowat_exporter-{{ cryptowat_archive_id }}"
+
+- name: build cryptowat
+  shell: ". /etc/profile; go build"
+  args:
+    chdir: "/root/cryptowat_exporter-{{ cryptowat_archive_id }}"
+
+- name: copy cryptowat_exporter binary into path
+  copy:
+    src: "/root/cryptowat_exporter-{{ cryptowat_archive_id }}/cryptowat_exporter"
+    dest: /usr/local/bin
+    remote_src: yes
+    owner: cryptowat
+    group: cryptowat
+    mode: "0770"
+  notify: cryptowat-daemon-restart
+
+- name: Copy cryptowat service script
+  template:
+    src: cryptowat.service.j2
+    dest: /etc/systemd/system/cryptowat.service
+    owner: root
+    group: root
+    mode: '0660'
+  notify: cryptowat-daemon-restart

@@ -1,0 +1,47 @@
+---
+
+- name: Ensure group 'node_exporter' exists
+  group:
+    name: node_exporter
+    state: present
+
+- name: Add the user 'node_exporter'
+  user:
+    name: node_exporter
+    group: node_exporter
+    shell: /usr/bin/false
+    create_home: no
+
+- name: download node_exporter
+  get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-{{ arch }}.tar.gz"
+    dest: /root/node_exporter-{{ node_exporter_version }}.linux-{{ arch }}.tar.gz
+    force: no
+  when: not skip_downloads
+
+- name: unpack node_exporter
+  unarchive:
+    src: /root/node_exporter-{{ node_exporter_version }}.linux-{{ arch }}.tar.gz
+    dest: /root
+    remote_src: yes
+  args:
+    creates: /root/node_exporter-{{ node_exporter_version }}.linux-{{ arch }}
+
+- name: copy node_exporter binary
+  copy:
+    src: /root/node_exporter-{{ node_exporter_version }}.linux-{{ arch }}/node_exporter
+    dest: /usr/local/bin
+    remote_src: yes
+    owner: node_exporter
+    group: node_exporter
+    mode: '0770'
+  notify: node_exporter-daemon-restart
+
+- name: Copy node_exporter service script
+  template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: '0660' # set to not be readable to non-root as service script contains a password
+  notify: node_exporter-daemon-restart

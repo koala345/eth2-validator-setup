@@ -1,0 +1,43 @@
+---
+
+- name: "Checking out Prysm Git repo ({{ prysm_branch }})"
+  git:
+    repo: 'https://github.com/prysmaticlabs/prysm.git'
+    dest: /root/prysm
+    version: "{{ prysm_branch }}"
+
+- name: Building Beacon Chain (this could take a while)...
+  shell: bazel build //beacon-chain:beacon-chain
+  register: ps
+  args:
+    chdir: /root/prysm
+
+#- debug: msg={{ ps.stderr_lines }}  - messes up order of messages
+
+- name: Copy the beaconchain binary into /usr/local/bin
+  copy:
+    src: /root/prysm/bazel-bin/beacon-chain/linux_amd64_stripped/beacon-chain
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: '0755'
+    owner: beaconchain
+    group: beaconchain
+  notify: beaconchain-daemon-restart
+
+- name: building Validator...
+  shell: bazel build //validator:validator
+  register: ps
+  args:
+    chdir: /root/prysm
+
+- include: validator-keys.yml
+
+- name: Copy the validator binary into /usr/local/bin
+  copy:
+    src: /root/prysm/bazel-bin/validator/linux_amd64_stripped/validator
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: '0755'
+    owner: validator
+    group: validator
+  notify: validator-daemon-restart

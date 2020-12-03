@@ -1,0 +1,83 @@
+---
+
+- name: install Grafana GPG key
+  apt_key:
+    url: https://packages.grafana.com/gpg.key
+    state: present
+
+- apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    state: present
+
+- name: Install grafana
+  apt:
+    name: ['grafana']
+    state: present
+#  notify: grafana_server_restart
+
+# we can't use notify and a handler to restart the service, as other tasks below
+# rely on the service being up and running already.
+- name: (re)start grafana service
+  systemd:
+    name: grafana-server
+    state: restarted
+    enabled: yes
+
+- name: create grafana install directory
+  file:
+    path: /root/grafana
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- set_fact:
+    validator_json_file: "{{ 'less_10_validators.json' if validator_num < 10 else 'more_10_validators.json' }}"
+
+- name: download grafana dashboard config
+  get_url:
+    url: "https://raw.githubusercontent.com/GuillaumeMiralles/prysm-grafana-dashboard/master/{{ validator_json_file }}"
+    dest: /root/grafana/dashboard.json
+    force: no
+  when: not skip_downloads
+
+- name: Copy the script that updates the dashboard json
+  copy:
+    src: update_dashboard.py
+    dest: /root/grafana/update_dashboard.py
+    owner: root
+    group: root
+    mode: '0664'
+
+- name: update the grafana dashboard before importing
+  shell: python3 update_dashboard.py
+  args:
+    chdir: /root/grafana
+
+- name: Wait for the grafana service to be fully up and responding
+  wait_for:
+    port: "{{ grafana_port }}"
+    delay: 5
+
+- name: Set grafana admin password
+  command: grafana-cli admin reset-admin-password {{ grafana_password }}
+
+- name: Create Prometheus datasource in Grafana
+  grafana_datasource:
+    name: "Prometheus"
+    ds_type: "prometheus"
+    ds_url: "http://localhost:{{ prometheus_port }}"
+    use_proxy:  yes
+    url_username: admin
+    url_password: "{{ grafana_password }}"
+    grafana_url: "http://localhost:{{ grafana_port }}"
+
+- name: Import Grafana dashboard
+  grafana_dashboard:
+    use_proxy:  yes
+    url_username: admin
+    url_password: "{{ grafana_password }}"
+    grafana_url: "http://localhost:{{ grafana_port }}"
+    state: present
+    overwrite: yes
+    path: /root/grafana/dashboard_upd.json

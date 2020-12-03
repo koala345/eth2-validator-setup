@@ -1,0 +1,56 @@
+---
+
+- import_tasks: create_user.yml
+  vars:
+    username: eth2stats
+
+- name: Checking out Eth2stats Git repo
+  git:
+    repo: 'https://github.com/Alethio/eth2stats-client.git'
+    dest: /root/eth2stats-client
+    version: "{{ eth2stats_branch }}"
+
+- name: Building Eth2stats client...
+#  shell: PATH=$PATH:/usr/local/go/bin; /bin/bash -c 'make build'
+  shell: ". /etc/profile; make build"
+  args:
+    chdir: /root/eth2stats-client
+
+- name: copy eth2stats-client binary into path
+  copy:
+    src: /root/eth2stats-client/eth2stats-client
+    dest: /usr/local/bin
+    remote_src: yes
+    owner: eth2stats
+    group: eth2stats
+    mode: "0770"
+  notify: eth2stats-client-restart
+
+- name: Create the /opt/eth2/eth2stats directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: eth2stats
+    group: eth2stats
+  with_items:
+    - "{{ eth2stats_dir }}"
+    - "{{ eth2stats_dir }}/data"
+
+- name: Copy eth2stats config file
+  template:
+    src: eth2stats-config.yml.j2
+    dest: "{{ eth2stats_dir }}/config.yml"
+    owner: eth2stats
+    group: eth2stats
+    mode: '0666'
+  notify: eth2stats-client-restart
+
+- name: Copy eth2stats service script
+  template:
+    src: eth2stats.service.j2
+    dest: /etc/systemd/system/eth2stats.service
+    owner: root
+    group: root
+    mode: '0660'
+  notify: eth2stats-client-restart

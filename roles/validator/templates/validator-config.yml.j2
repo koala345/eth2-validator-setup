@@ -1,0 +1,8 @@
+---
+wallet-dir: {{  wallet_dir }}
+monitoring-port: {{ validator_monitor_port }}
+graffiti: {{ validator_graffiti }}
+datadir: {{  validator_dir }}
+wallet-password-file: {{ wallet_dir }}/.walletpwd
+accept-terms-of-use: True
+{{ (network == 'mainnet') | ternary("", network + ": True") }}

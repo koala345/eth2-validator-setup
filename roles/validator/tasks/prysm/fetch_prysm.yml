@@ -1,0 +1,72 @@
+---
+
+# instead of compiling it, simply download the eth2 binaries
+# We don't use the prysm.sh script to start the validator or beaconchain, we
+# only use it to download the binaries.
+
+- name: Create the /root/prysm directory
+  file:
+    path: /root/prysm-bin
+    state: directory
+    mode: '0755'
+
+- name: Download prysm.sh script
+  get_url:
+    url: https://raw.githubusercontent.com/prysmaticlabs/prysm/master/prysm.sh
+    dest: /root/prysm-bin/prysm.sh
+    force: no  # a known bug in Ansible may trigger a download anyway even when not necessary
+    mode: '0744'
+
+#
+# Fetch the validator and beacon-chain binaries.
+# This may download every time Ansible is run, no good way to prevent
+#
+- name: fetching beacon-chain binary...
+  shell: ./prysm.sh beacon-chain --download-only
+  args:
+    chdir: /root/prysm-bin
+
+- name: fetching validator binary...
+  shell: ./prysm.sh validator --download-only
+  args:
+    chdir: /root/prysm-bin
+
+
+
+#
+# find the latest beacon-chain dist in /root/prysm/dist and copy to /usr/local/bin
+#
+- find:
+    paths: "/root/prysm-bin/dist/"
+    patterns: "beacon-chain-*{{ arch }}"
+  register: beacon_chain_bins
+- set_fact:
+    latest_beacon_chain_bin: "{{ beacon_chain_bins.files | sort(attribute='mtime',reverse=true) | first }}"
+- name: copy beacon-chain binary to /usr/local/bin
+  copy:
+    src: "{{ latest_beacon_chain_bin.path }}"
+    dest: /usr/local/bin/beacon-chain
+    remote_src: yes
+    mode: '0755'
+    owner: beaconchain
+    group: beaconchain
+  notify: beaconchain-daemon-restart
+
+#
+# find the latest validator dist in /root/prysm/dist and copy to /usr/local/bin
+#
+- find:
+    paths: "/root/prysm-bin/dist/"
+    patterns: "validator-*{{ arch }}"
+  register: validator_bins
+- set_fact:
+    latest_validator_bin: "{{ validator_bins.files | sort(attribute='mtime',reverse=true) | first }}"
+- name: copy validator binary to /usr/local/bin
+  copy:
+    src: "{{ latest_validator_bin.path }}"
+    dest: /usr/local/bin/validator
+    remote_src: yes
+    mode: '0755'
+    owner: validator
+    group: validator
+  notify: validator-daemon-restart

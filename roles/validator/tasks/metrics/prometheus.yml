@@ -1,0 +1,82 @@
+---
+
+- name: Ensure group 'prometheus' exists
+  group:
+    name: prometheus
+    state: present
+
+- name: Add the user 'prometheus'
+  user:
+    name: prometheus
+    group: prometheus
+    shell: /usr/bin/false
+    create_home: no
+
+- name: create prometheus directories if they don't exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0755
+  with_items:
+    - /etc/prometheus
+    - /var/lib/prometheus
+
+- name: download prometheus
+  get_url:
+    url: "https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-{{ arch }}.tar.gz"
+    dest: /root/prometheus-{{ prometheus_version }}.linux-{{ arch }}.tar.gz
+    force: no
+  when: not skip_downloads
+
+- name: unpack prometheus
+  unarchive:
+    src: /root/prometheus-{{ prometheus_version }}.linux-{{ arch }}.tar.gz
+    dest: /root
+    remote_src: yes
+  args:
+    creates: /root/prometheus-{{ prometheus_version }}.linux-{{ arch }}
+
+- name: copy prometheus binaries
+  copy:
+    src: "/root/prometheus-{{ prometheus_version }}.linux-{{ arch }}/{{ item }}"
+    dest: /usr/local/bin
+    remote_src: yes
+    owner: prometheus
+    group: prometheus
+    mode: 0770
+  with_items:
+    - prometheus
+    - promtool
+  notify: prometheus-daemon-restart
+
+- name: copy prometheus content files
+  copy:
+    src: "/root/prometheus-{{ prometheus_version }}.linux-{{ arch }}/{{ item }}"
+    dest: /etc/prometheus
+    remote_src: yes
+    owner: prometheus
+    group: prometheus
+  with_items:
+    - consoles
+    - console_libraries
+  notify: prometheus-daemon-restart
+
+- name: Copy prometheus config file
+  template:
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus
+    mode: '0664'
+  notify: prometheus-daemon-restart
+
+- name: Copy prometheus service script
+  template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+    owner: root
+    group: root
+    mode: '0660' # set to not be readable to non-root as service script contains a password
+  notify: prometheus-daemon-restart

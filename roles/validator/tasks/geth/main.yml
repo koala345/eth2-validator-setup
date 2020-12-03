@@ -1,0 +1,32 @@
+---
+- name: install Geth repo
+  apt_repository:
+    repo: 'ppa:ethereum/ethereum'
+    state: present
+
+- name: Install Geth
+  apt:
+    name: 'geth'
+    state: present
+
+- name: create goeth user
+  import_tasks: create_user.yml
+  vars:
+    username: goeth
+
+- name: Create the goethereum data directory
+  file:
+    path: "{{  goethereum_data_dir }}"
+    state: directory
+    mode: '0755'
+    owner: goeth
+    group: goeth
+
+- name: Copy geth service script
+  template:
+    src: geth.service.j2
+    dest: /etc/systemd/system/geth.service
+    owner: root
+    group: root
+    mode: '0664'
+  notify: geth-daemon-restart

@@ -1,0 +1,15 @@
+[Unit]
+Description=cryptowat
+Wants=beaconchain.service
+After=network-online.target
+
+[Service]
+Type=simple
+User=cryptowat
+Group=cryptowat
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/bin/cryptowat_exporter --web.listen-address=":{{ cryptowat_port }}" --cryptowat.pairs={{ cryptowat_pairs }} --cryptowat.exchanges={{ cryptowat_exchanges }} --cryptowat.cacheseconds="60"
+
+[Install]
+WantedBy=multi-user.target

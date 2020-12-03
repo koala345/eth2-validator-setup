@@ -1,0 +1,17 @@
+[Unit]
+Description=Validator
+Wants=beaconchain.target
+After=network-online.target
+BindsTo=beaconchain.service
+
+[Service]
+Type=simple
+User=validator
+Group=validator
+Restart=always
+RestartSec=5
+#ExecStartPre=/bin/sleep 20   # delay startup to give beaconchain the chance to initialize
+ExecStart=/usr/local/bin/validator --config-file={{ validator_dir }}/config.yml
+
+[Install]
+WantedBy=multi-user.target

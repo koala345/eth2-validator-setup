@@ -1,0 +1,16 @@
+---
+
+- include: cryptowat.yml
+  when: install_cryptowat
+  
+- include: eth2stats.yml
+  when: install_eth2stats
+
+- include: prometheus.yml
+  when: install_prometheus
+
+- include: node_exporter.yml
+  when: install_node_exporter
+
+- include: grafana.yml
+  when: install_grafana

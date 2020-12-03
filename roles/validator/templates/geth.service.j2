@@ -1,0 +1,18 @@
+[Unit]
+Description=Ethereum go client
+After=network.target
+Wants=network.target
+
+[Service]
+User=goeth
+Group=goeth
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/bin/geth --networkid {{ geth_network_id }} --http --http.port {{ geth_http_port }} \
+  --http.addr {{ geth_http_addr }} --datadir {{ goethereum_data_dir }} --cache 2048 \
+  --maxpeers {{ geth_max_peers }} --port {{ geth_port }} \
+  {{ (geth_bootnodes is truthy) | ternary('--bootnodes "' + geth_bootnodes + '"', '')}}
+
+[Install]
+WantedBy=default.target

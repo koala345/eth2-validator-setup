@@ -1,0 +1,28 @@
+---
+
+- name: Download Go
+  get_url:
+    url: https://dl.google.com/go/go{{ go_version }}.linux-{{ arch }}.tar.gz
+    dest: /root/go{{ go_version }}.linux-{{ arch }}.tar.gz
+    force: no  # a known bug in Ansible may trigger a download anyway even when not necessary
+    mode: '0644'
+  when: not skip_downloads
+
+- name: unpack Go archive
+  unarchive:
+    src: /root/go{{ go_version }}.linux-{{ arch }}.tar.gz
+    dest: /usr/local
+    remote_src: yes
+  args:
+    creates: /usr/local/go
+
+
+- name: Add Go binary to the PATH for all users
+  copy:
+    dest: /etc/profile.d/go-bin.sh
+    content: 'export PATH=$PATH:/usr/local/go/bin'
+
+- name: Set GOPATH for all users
+  copy:
+    dest: /etc/profile.d/go-path.sh
+    content: "export GOPATH=$HOME/go\nexport PATH=$GOPATH/bin:$PATH"

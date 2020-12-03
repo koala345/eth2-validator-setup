@@ -1,0 +1,8 @@
+---
+grpc-gateway-port: {{ beaconchain_grpc_port }}
+datadir: {{ beaconchain_dir }}
+rpc-port: {{ beaconchain_rpc_port }}
+monitoring-port: {{ beaconchain_monitor_port }}
+http-web3provider: {{ web3_provider }}
+accept-terms-of-use: True
+{{ (network == 'mainnet') | ternary("", network + ": True") }}

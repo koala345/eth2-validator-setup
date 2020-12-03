@@ -1,0 +1,15 @@
+[Unit]
+Description=Beaconchain
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=beaconchain
+Group=beaconchain
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/bin/beacon-chain --config-file={{ beaconchain_dir }}/config.yml
+
+[Install]
+WantedBy=multi-user.target

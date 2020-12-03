@@ -1,0 +1,26 @@
+---
+
+- name: Update APT package cache
+  action: apt update_cache=yes
+
+- name: Install required packages
+  apt:
+    name: ['ntp','git','curl','unzip','gnupg','build-essential']
+    state: present
+#  with_items:
+#    - openssl
+#    - python-pip
+#    - autoconf
+#    - automake
+#    - libtool
+#    - pkg-config
+#    - gcc
+#    - patch
+
+- name: Install Go
+  include: install_go.yml
+  when: install_go
+
+- name: Install Bazel
+  include: install_bazel.yml
+  when: compile_prysm

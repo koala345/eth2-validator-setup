@@ -1,0 +1,90 @@
+---
+
+- import_tasks: create_user.yml
+  vars:
+    username: beaconchain
+
+- name: Create the /opt/eth2/beaconchain directory
+  file:
+    path: "{{  beaconchain_dir }}"
+    state: directory
+    mode: '0755'
+    owner: beaconchain
+    group: beaconchain
+
+- name: Copy beaconchain config file
+  template:
+    src: beaconchain-config.yml.j2
+    dest: "{{ beaconchain_dir }}/config.yml"
+    owner: beaconchain
+    group: beaconchain
+    mode: '0666'
+  notify: beaconchain-daemon-restart
+
+- import_tasks: create_user.yml
+  vars:
+    username: validator
+
+- name: Create the /opt/eth2/validators directory
+  file:
+    path: "{{ validator_dir }}"
+    state: directory
+    mode: '0755'
+    owner: validator
+    group: validator
+
+- name: Create the /opt/eth2/prysm-wallet-v2 directory
+  file:
+    path: "{{ wallet_dir }}"
+    state: directory
+    mode: '0700'
+    owner: validator
+    group: validator
+
+- name: Copy validator config file
+  template:
+    src: validator-config.yml.j2
+    dest: "{{ validator_dir }}/config.yml"
+    owner: validator
+    group: validator
+    mode: '0666'
+  notify: validator-daemon-restart
+
+# depending on compile_prysm boolean flag, either compile prysm binaries
+# from source, or fetch them using the prysm.sh script.
+- include: build_prysm.yml
+  when: compile_prysm
+
+- include: fetch_prysm.yml
+  when: not compile_prysm
+
+- name: Copy beaconchain service script
+  template:
+    src: beaconchain.service.j2
+    dest: /etc/systemd/system/beaconchain.service
+    owner: root
+    group: root
+    mode: '0664'
+  notify: beaconchain-daemon-restart
+
+- name: Copy validator service script
+  template:
+    src: validator.service.j2
+    dest: /etc/systemd/system/validator.service
+    owner: root
+    group: root
+    mode: '0660' # set to not be readable to non-root as service script contains a password
+  notify: daemon-reload
+
+- name: enable validator service to start on boot
+  systemd:
+    name: validator
+    enabled: yes
+
+- name: copy all the keystore files to the server
+  copy:
+    src: validator_keys/
+    dest: "{{ validator_dir }}"
+    mode: '0600'
+    owner: validator
+    group: validator

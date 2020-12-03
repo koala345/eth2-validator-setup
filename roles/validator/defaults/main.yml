@@ -1,0 +1,95 @@
+---
+  # This file lists all the default configurations for your eth2 validator server.
+  # Don't update anything in here, unless you know what you're doing.
+  # It's better to simply override values in your eth2_mainnet.yml or eth2_testnet.yml
+  # in the project root.
+
+  # support for validators other than Prysm may come
+  eth2client: 'Prysm'
+
+  # override this to 'mainnet' if not on testnet
+  network: 'pyrmont'
+
+  # by default, don't compile. If compile_prysm is set to True, it will build master
+  compile_prysm: false
+  prysm_branch: master
+
+  # Beaconchain defaults
+  #
+  beaconchain_dir: /opt/eth2/beaconchain
+  beaconchain_rpc_port: '4000'
+  beaconchain_monitor_port: '8080'
+  beaconchain_grpc_port: '3100' # default is 3000 but will conflict with grafana
+  beaconchain_tcp_port: '13000'
+  beaconchain_udp_port: '12000'
+  # by default beaconchain will point to local Eth1 node. If you prefer to
+  # use an external node, override this value.
+  web3_provider: "http://127.0.0.1:{{ geth_http_port }}"
+
+  # Validator defaults
+  #
+  validator_dir: /opt/eth2/validators
+  validator_graffiti: '<eth2-validator-setup>'
+  # do not change this after your validator keys have already been created!
+  validator_password: validatorPass
+  validator_monitor_port: '8081'
+  wallet_dir: "/opt/eth2/prysm-wallet-v2"
+  validator_num: 1
+
+  # Geth defaults
+  #
+  install_eth1_node: yes
+  # 1 = mainnet, 5 = Görli
+  geth_network_id: 5
+  # if not running a local eth1 node, override this with web3 provider address and port
+  goethereum_data_dir: "/opt/goethereum/{{ geth_network_id }}"
+  geth_port: '30303'
+  geth_http_port: '8545'
+  geth_http_addr: 'localhost'
+  # set this to True if you want to allow external access to your eth1 node
+  geth_open_http_port: False
+  geth_max_peers: 30
+  geth_bootnodes: ""
+
+  # Eth2stats defaults
+  #
+  install_eth2stats: no
+  eth2stats_branch: master
+  eth2stats_dir: /opt/eth2/eth2stats
+  eth2stats_host: grpc.medalla.eth2stats.io
+
+  # Prometheus defaults
+  #
+  install_prometheus: yes
+  prometheus_version: 2.22.2
+  prometheus_port: '9090'
+
+  # Node exporter defaults
+  #
+  install_node_exporter: yes
+  node_exporter_version: 1.0.0-rc.1
+  node_exporter_monitor_port: '9100'
+
+  # Cryptowat defaults
+  #
+  install_cryptowat: yes
+  cryptowat_archive_id: e4bcf6e16dd2e04c4edc699e795d9450dee486ab
+  cryptowat_port: '9745'
+  cryptowat_pairs: ethusd,ethbtc,etheur
+  cryptowat_exchanges: kraken
+
+  # Grafana default config
+  #
+  install_grafana: yes
+  grafana_password: grafanaAdmin
+  grafana_port: '3000' # changing this won't work unless grafana config changes are made
+
+  # Other defaults
+  #
+  install_go: yes     # should be yes if you are installing eth2stats/cryptowat, unless pushing to a
+                      # server that already has Go installed
+  go_version: 1.14.4
+  arch: amd64
+  # if you need to run ansible many times but each time it's downloading various application
+  # archives (due to an Ansible bug), you can temporarily override this flag to stop that.
+  skip_downloads: no

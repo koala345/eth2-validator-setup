@@ -1,0 +1,15 @@
+[Unit]
+Description=eth2stats
+Wants=beaconchain.service
+After=network-online.target
+
+[Service]
+Type=simple
+User=eth2stats
+Group=eth2stats
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/bin/eth2stats-client run --config={{eth2stats_dir}}/config.yml
+
+[Install]
+WantedBy=multi-user.target

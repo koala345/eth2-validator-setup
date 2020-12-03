@@ -1,0 +1,65 @@
+---
+
+- name: beaconchain-daemon-restart
+  systemd:
+    name: beaconchain
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: geth-daemon-restart
+  systemd:
+    name: geth
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: daemon-reload
+  systemd:
+    daemon_reload: yes
+
+# We don't have any handlers here that actually (re)start the validator
+# as it should not be started until the beaconchain is synced.
+# User should manually start this service when ready.
+
+- name: validator-daemon-restart
+  systemd:
+    name: validator
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+#  debug: msg="Validator daemon updated. You should restart it manually, after confirming the beaconchain is fully synced, with 'sudo systemctl restart validator'"
+
+- name: eth2stats-client-restart
+  systemd:
+    name: eth2stats
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: prometheus-daemon-restart
+  systemd:
+    name: prometheus
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: node_exporter-daemon-restart
+  systemd:
+    name: node_exporter
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: cryptowat-daemon-restart
+  systemd:
+    name: cryptowat
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: grafana_server_restart
+  systemd:
+    name: grafana-server
+    state: restarted
+    enabled: yes

@@ -1,0 +1,8 @@
+---
+eth2stats.node-name: "{{ eth2stats_nodename }}"
+data.folder: {{ eth2stats_dir }}/data
+eth2stats.addr: "{{ eth2stats_host }}:443"
+eth2stats.tls: true
+beacon.type: "prysm"
+beacon.addr: "localhost:{{ beaconchain_rpc_port}}"
+beacon.metrics-addr: "http://localhost:{{ beaconchain_monitor_port }}/metrics"

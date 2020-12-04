@@ -22,6 +22,8 @@
   beaconchain_grpc_port: '3100' # default is 3000 but will conflict with grafana
   beaconchain_tcp_port: '13000'
   beaconchain_udp_port: '12000'
+  beaconchain_max_peers: '30'
+
   # by default beaconchain will point to local Eth1 node. If you prefer to
   # use an external node, override this value.
   web3_provider: "http://127.0.0.1:{{ geth_http_port }}"

@@ -7,7 +7,7 @@
   # it is recommended that you override the defaults below. Most settings that you can
   # override here can be found in roles/validator/defaults/main.yml
   vars:
-    network: 'pyrmont'  # change to 'mainnet' for mainnet setup
+    network: 'pyrmont'  # set up an environment for the testnet
 
     # if you want to install a local ETH1 node, use the configuration below.
     # If you want to connect to an external node, you can comment out

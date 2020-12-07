@@ -1,0 +1,32 @@
+---
+- hosts: all
+  name: provision test host running eth2 validator in VirtualBox VM image
+  become: yes
+  become_method: sudo
+
+  # This is an example setup for running the Prysm beaconchain in a VirtualBox
+  # VM. This example does not install/run an Eth1 node, but uses an infura
+  # node instead.
+
+  vars:
+    network: 'pyrmont'  # change to 'mainnet' for mainnet setup
+    install_eth1_node: no
+
+    validator_graffiti: 'Vagrant test node'
+
+    # connect to an external Eth1 node.
+    web3_provider: https://goerli.infura.io/v3/yourinstanceid
+
+    # URL at which grafana will be available
+    grafana_url: "http://localhost"
+    # password for Grafana UI access (username will be 'admin')
+    grafana_password: grafanaAdmin
+
+    install_eth2stats: yes
+    eth2stats_nodename: vagrant_test
+    
+    cryptowat_pairs: ethusd,ethbtc,etheur
+    cryptowat_exchanges: kraken
+
+  roles:
+     - { role: validator }

@@ -4,3 +4,5 @@ validator_keys/*.json
 validator_keys.*/
 eth2_mainnet.yml
 eth2_testnet.yml
+eth2_vagrant.yml
+.vagrant

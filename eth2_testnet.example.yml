@@ -9,14 +9,16 @@
   vars:
     network: 'pyrmont'  # set up an environment for the testnet
 
-    # if you want to install a local ETH1 node, use the configuration below.
-    # If you want to connect to an external node, you can comment out
-    # the next 4 lines
+    # if you want to install a local ETH1 node, enable the following property.
+    # Your beaconchain will automatically be configured to use your local node.
+    # Set to 'no' if you have limited server resources and/or harddisk and want to
+    # sync to an external node.
     install_eth1_node: yes
+    # only applies when running a local eth1 node:
     geth_network_id: 5  # 5 = Görli
-    geth_bootnodes: "enode://df85d47ef311c7563c9e7d095799d5033d8732c21c3df9cc8d89a8b6f82dd5ea95e3ebcc129d5fc91961c6f0b827937279812cbf839d92e39a3e8362d210ce05@173.212.232.153:30303,enode://4fcfd895fe18c51b763a016112e2ac094a1eba8668eda0e833bc0d772d4d94575e4fb01f38390ee3f0c39ec0289ecd64032160c4b083c18a7f5816b50e50c30a@221.12.141.194:30303"
-    # if you want to connect to an external ETH1 node, uncomment the following line
-    # and provide the url to a node.
+    # geth_bootnodes: "enode://..."  # you can provide a bootnodes list if you are having problems finding peers
+    #
+    # If install_eth1_node is 'no', configure your web3 provider below.
     # web3_provider: https://mainnet.infura.io/v3/yourserverid
 
     validator_password: validatorPass

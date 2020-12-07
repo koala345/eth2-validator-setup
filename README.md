@@ -29,6 +29,8 @@ We will make every attempt to keep this project up to date, so to update your en
 Target machine: Ubuntu 18 or 20. Raspberry PI 4 (with Ubuntu Server 20) should work as well.
 For further minimum system requirements please visit this page: https://docs.prylabs.network/docs/install/linux
 
+Don't have hardware? This project contains a Vagrant file, with which you can spin up the entire stack in a Virtualbox Ubuntu VM image. Vagrant instructions down below.
+
 Local Machine: You will need to have Python and Ansible installed locally.  This can be installed with Pip on Mac/Linux:
 https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#from-pip
 
@@ -161,6 +163,27 @@ If you just want to see the last 100 lines or so, you could use:
 ```
 journalctl -u beaconchain -n 100
 ```
+
+
+## Vagrant setup
+
+If you do not have access to hardware with Ubuntu OS, or would like to try this in a virtual machine first,
+you can use Vagrant and Virtualbox to run the entire stack in a VM image.
+
+1. Install VirtualBox and Vagrant on your local system.
+https://www.virtualbox.org/
+https://www.vagrantup.com/
+
+2. cd into the project root and bring up your VM with
+
+```
+vagrant up
+```
+This will download and bring up a VM (which can take a while the first time), and
+automatically run all provisioning. If you ran into errors or change your
+configuration, simply re-run provisioning with the 'vagrant provision' command.
+
+You can use 'vagrant suspend' to suspend the VM when you're done testing. 
 
 ## Problems?
 

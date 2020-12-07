@@ -7,11 +7,13 @@
 - include: geth/main.yml
   when: install_eth1_node
 
-- systemd:
-    name: geth
-    state: stopped
-    enabled: no
-  when: not install_eth1_node  # in case it was installed before
+# This can be used to make sure geth is stopped and disabled if geth config
+# is changed, but will fail if geth was never installed.
+# - systemd:
+#     name: geth
+#     state: stopped
+#     enabled: no
+#   when: not install_eth1_node  # in case it was installed before
 
 - include: prysm/prysm.yml
   when: eth2client == "Prysm"

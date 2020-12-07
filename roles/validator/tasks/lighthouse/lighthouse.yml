@@ -1,3 +1,5 @@
 ---
 
+# this is work in progress. Lighthouse is not yet supported. 
+
 - include: ../deps/rust.yml

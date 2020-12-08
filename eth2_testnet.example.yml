@@ -19,7 +19,7 @@
     # geth_bootnodes: "enode://..."  # you can provide a bootnodes list if you are having problems finding peers
     #
     # If install_eth1_node is 'no', configure your web3 provider below.
-    # web3_provider: https://mainnet.infura.io/v3/yourserverid
+    # web3_provider: https://goerli.prylabs.net/
 
     validator_password: validatorPass
     validator_graffiti: 'set your graffiti string here'

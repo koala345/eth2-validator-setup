@@ -15,16 +15,17 @@
     validator_graffiti: 'Vagrant test node'
 
     # connect to an external Eth1 node.
-    web3_provider: https://goerli.infura.io/v3/yourinstanceid
+    web3_provider: https://goerli.prylabs.net/
 
     # URL at which grafana will be available
     grafana_url: "http://localhost"
     # password for Grafana UI access (username will be 'admin')
     grafana_password: grafanaAdmin
 
-    install_eth2stats: yes
+    # you're probably just testing so no need to send stats to eth2stats
+    install_eth2stats: no
     eth2stats_nodename: vagrant_test
-    
+
     cryptowat_pairs: ethusd,ethbtc,etheur
     cryptowat_exchanges: kraken
 

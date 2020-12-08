@@ -183,7 +183,10 @@ This will download and bring up a VM (which can take a while the first time), an
 automatically run all provisioning. If you ran into errors or change your
 configuration, simply re-run provisioning with the 'vagrant provision' command.
 
-You can use 'vagrant suspend' to suspend the VM when you're done testing. 
+You WILL still have to run the same manual steps to import your validator keys as
+described in the main docs above. SSH into the VM with 'vagrant ssh' and follow the same steps.
+
+You can use 'vagrant suspend' to suspend the VM when you're done testing.
 
 ## Problems?
 

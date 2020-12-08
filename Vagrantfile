@@ -23,8 +23,17 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
-  config.vm.network "forwarded_port", guest: 9090, host: 9090
-  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  # config.vm.network "forwarded_port", guest: 9090, host: 9090
+
+  # forward grafana port
+  config.vm.network "forwarded_port", guest: 3000, host: 3000, protocol: 'tcp'
+  # forward beaconchain ports
+  config.vm.network "forwarded_port", guest: 12000, host: 12000, protocol: 'udp'
+  config.vm.network "forwarded_port", guest: 13000, host: 13000, protocol: 'tcp'
+  # open external Geth port
+  config.vm.network "forwarded_port", guest: 30303, host: 30303, protocol: 'tcp'
+  config.vm.network "forwarded_port", guest: 30303, host: 30303, protocol: 'udp'
+
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access

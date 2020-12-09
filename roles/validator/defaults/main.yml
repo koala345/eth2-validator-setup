@@ -32,10 +32,9 @@
   #
   validator_dir: /opt/eth2/validators
   validator_graffiti: '<eth2-validator-setup>'
-  # do not change this after your validator keys have already been created!
-  validator_password: validatorPass
   validator_monitor_port: '8081'
   wallet_dir: "/opt/eth2/prysm-wallet-v2"
+  wallet_password: "CHANGEME"
   validator_num: 1
 
   # Geth defaults

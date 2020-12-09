@@ -1,0 +1,21 @@
+#!/bin/bash
+
+LIST_ARGS="accounts list --wallet-dir {{ wallet_dir }} --wallet-password-file {{ wallet_dir }}/.walletpwd --accept-terms-of-use"
+IMPORT_ARGS="accounts import --wallet-dir {{ wallet_dir }} --keys-dir {{ validator_dir }} --wallet-password-file {{ wallet_dir }}/.walletpwd --accept-terms-of-use"
+NETWORK="{{ (network == 'mainnet') | ternary('', '--' + network) }}"
+
+if [[ "$1" = "list" ]]
+then
+  # list imported keys
+  /usr/local/bin/validator $LIST_ARGS $NETWORK
+
+elif [[ "$1" = "import" ]]
+then
+  # import keys
+  /usr/local/bin/validator $IMPORT_ARGS $NETWORK
+
+else
+  echo "usage: prysm-accounts (list | import)"
+  echo
+  exit 1
+fi

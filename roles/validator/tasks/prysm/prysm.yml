@@ -88,3 +88,19 @@
     mode: '0600'
     owner: validator
     group: validator
+
+- name: write wallet password file
+  copy:
+    content: "{{ wallet_password }}"
+    dest: "{{ wallet_dir }}/.walletpwd"
+    mode: '0600'
+    owner: validator
+    group: validator
+
+- name: copy prysm-accounts convenience script to server
+  template:
+    src: prysm-accounts.j2
+    dest: /usr/local/bin/prysm-acccounts
+    owner: validator
+    group: validator
+    mode: '0755'

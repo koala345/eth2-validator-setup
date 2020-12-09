@@ -95,32 +95,15 @@ If you followed the instructions above, your keystore files should have already 
 
 Now, on the server run the following commands:
 ```
-# for testnet (substitute 'pyrmont' for other networks if necessary)
-/usr/local/bin/validator -- accounts import --keys-dir=/opt/eth2/validators --accept-terms-of-use --pyrmont
-
-
-# or for mainnet
-/usr/local/bin/validator -- accounts import --keys-dir=/opt/eth2/validators --accept-terms-of-use
+sudo /usr/local/bin/prysm-accounts import
 ```
 
-when prompted for directory, enter '/opt/eth2/prysm-wallet-v2'
-Enter a new password for protecting your new wallet as well.
+It will prompt you for the password that you set when you generated your keys (using the deposit CLI tool).
 
-You can verify the wallet accounts afterwards with the following command
-(add '--pyrmont' to the command below when doing this for a testnet setup):
+You can verify the wallet accounts afterwards with the following command:
 ```
-/usr/local/bin/validator -- accounts list --wallet-dir=/opt/eth2/prysm-wallet-v2 --accept-terms-of-use
+sudo /usr/local/bin/prysm-accounts list
 ```
-
-Now create the wallet password file and fix file access (as root):
-```
-sudo su -
-echo "<myPassword>" > /opt/eth2/prysm-wallet-v2/.walletpwd
-chmod 600 /opt/eth2/prysm-wallet-v2/.walletpwd
-chown -R validator:validator /opt/eth2/prysm-wallet-v2
-```
-
-where <myPassword> is the password that you entered earlier to protect your wallet.
 
 That's all! You should be ready to run your beaconchain and validator now.
 
@@ -171,7 +154,9 @@ If you do not have access to hardware with Ubuntu OS, or would like to try this 
 you can use Vagrant and Virtualbox to run the entire stack in a VM image.
 
 1. Install VirtualBox and Vagrant on your local system.
+
 https://www.virtualbox.org/
+
 https://www.vagrantup.com/
 
 2. cd into the project root and bring up your VM with

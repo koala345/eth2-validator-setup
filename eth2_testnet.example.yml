@@ -21,7 +21,10 @@
     # If install_eth1_node is 'no', configure your web3 provider below.
     # web3_provider: https://goerli.prylabs.net/
 
-    validator_password: validatorPass
+    # this is the wallet password for the wallet generated on your server.
+    # It should be different from your keystore password that you set when you generated the keys.
+    wallet_password: 'CHANGEME'
+
     validator_graffiti: 'set your graffiti string here'
 
     # URL at which grafana will be available

@@ -12,6 +12,9 @@
     network: 'pyrmont'  # change to 'mainnet' for mainnet setup
     install_eth1_node: no
 
+    # this is the wallet password for the wallet generated on your server.
+    # It should be different from your keystore password that you set when you generated the keys.
+    wallet_password: 'CHANGEME'
     validator_graffiti: 'Vagrant test node'
 
     # connect to an external Eth1 node.
